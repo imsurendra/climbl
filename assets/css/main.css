@@ -20,10 +20,17 @@
 }
 
 /* Colors */
-:root {
+/* :root {
 	--color-default: #222222;
 	--color-primary: #008374;
 	--color-secondary: #f85a40;
+} */
+
+/* Colors */
+:root {
+	--color-default: #2B180D;
+	--color-primary: #1B2F45;
+	--color-secondary: #56B8E6;
 }
 
 /* Smooth scroll behavior */
