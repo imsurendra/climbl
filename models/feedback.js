@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const regUserSchema = new mongoose.Schema({
+const feedbackSchema = new mongoose.Schema({
     rating: {
 		type: Number,
 		required: false,
@@ -9,10 +9,14 @@ const regUserSchema = new mongoose.Schema({
 		type: String,
 		required: false,
 	},
+	feedbackToken: {
+		type: String,
+		required: true,
+	},
     createdAt: {
 		type: Date,
 		default: Date.now,
 	},
 });
 
-module.exports = mongoose.model("regUserDetails", regUserSchema);
+module.exports = mongoose.model("feedbackDetails", feedbackSchema);

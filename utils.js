@@ -5,10 +5,13 @@ module.exports = {
 	feedbackUserForm: async function (req, data) {
 		const feedbackDetails = require("./models/feedback");
 		let newfeed = new feedbackDetails({
-			feedback: data.feedback,
+			rating: data.rating,
+			desc: data.feedback,
+			feedbackToken: data.token
 		});
 
-		newreg.save(function (err) {
+		console.log("feedback = ", data.feedback);
+		newfeed.save(function (err) {
 			if (err) {
 				console.log(err.errors);
 				return err;

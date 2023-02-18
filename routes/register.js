@@ -1,54 +1,54 @@
 const router = require("express").Router();
-const {registerUserLog} = require("../utils");
+const {feedbackUserForm, registerUserLog} = require("../utils");
 var url = require("url");
 const { v4: uuidv4 } = require('uuid');
 
 
 // Feedback user
-router.post("/feedback", async (req, res) => {
-	console.log(req.body);
-	const regDetails = require("../models/reguser");
-	const feedbackDetails = require("../models/feedback");
+router.get("/feedback-form", async (req, res) => {
+	const current_url = url.parse(req.url, true);
+	const params = current_url.query;
+	const token = params.token;
 
-	const ispresent = await regDetails.find({ email: req.body.email });
-	
-	console.log("ispresent = ", ispresent.length);
-	
-	if (ispresent.length === 0) {
-		res.setHeader("Content-Type", "application/json");
-		res.end(JSON.stringify({ msg: "Already Registered!" }));
-	}else {
-		console.log(req.body);
-		const reguser = require("../models/reguser");
-		const feedData = {
-			name: req.body.name,
-			email: req.body.email,
-		};
-		try {
-			await registerUserLog(req, data);
-			res.setHeader("Content-Type", "application/json");
-			res.end(JSON.stringify({ msg: "Registered!", ...feedData }));
-		} catch (err) {
-			console.log("ERROR = \n", err);
-		}
+	// res.render("feedback-form", { token: token });
+	const feedbackDetails = require("../models/feedback");
+	let istokenpresent = await feedbackDetails.find({ feedbackToken: String(token) });
+
+	if (istokenpresent.length != 0) {
+		// res.writeHead(200, {'Content-Type': 'text/plain'});
+		res.status(200).send("<h1>Thanks for giving feedback!</h1>");
+	} else {
+		res.render("feedback-form", { token: token });
+		// res.redirect(`/feedback-form?token=${token}`);
 	}
+
+
 });
 
-
-router.get("/feedback/:token", async (req, res) => {
-	const token = req.params["token"];
+router.post("/feedback-form", async (req, res) => {
 	const regDetails = require("../models/reguser");
-	let istokenpresent = await regDetails.find({ feedbackToken: String(token) });
+	const feedbackDetails = require("../models/feedback");
+	const current_url = url.parse(req.url, true);
+	const params = current_url.query;
+	const token = params.token;	
 
-	if (istokenpresent) {
-		res.writeHead(200, {'Content-Type': 'text/plain'});
-		res.end(`You Have already given feedback =  ${token}!`);		
-	} else {
-		res.writeHead(200, {'Content-Type': 'text/plain'});
-		res.end(`Not Found!`);
+	console.log(req.body);
+
+	const reguser = require("../models/reguser");
+	const feedData = {
+		rating: req.body.rating,
+		feedback: req.body.feed,
+		token: params.token
+	};
+
+	console.log("feedData = ",feedData);
+	try {
+		await feedbackUserForm(req, feedData);
+		res.setHeader("Content-Type", "application/json");
+		res.end(JSON.stringify({ msg: "Feedback Filled!", ...feedData }));
+	} catch (err) {
+		console.log("ERROR = \n", err);
 	}
-	res.writeHead(200, {'Content-Type': 'text/plain'});
-  	res.end(`Hello ${token}!`);
 });
 
 // Register user

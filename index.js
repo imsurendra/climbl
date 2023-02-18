@@ -38,6 +38,7 @@ app.set("views", "./templates");
 app.set("view engine", "ejs");
 
 app.use(express.static(__dirname + "/static"));
+app.use("/images", express.static(__dirname + "static/images"));
 
 app.use(function (req, res, next) {
 	if (!req.user) {
@@ -65,7 +66,7 @@ app.use(
 app.use("/", registerRoutes);
 
 app.get("/", async (req, res) => {
-	res.render("register", {
+	res.render("index", {
 		});
 });
 
