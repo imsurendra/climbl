@@ -12,14 +12,17 @@ router.get("/feedback-form", async (req, res) => {
 
 	// res.render("feedback-form", { token: token });
 	const feedbackDetails = require("../models/feedback");
+	const regDetails = require("../models/reguser");
+	let regtoken = await regDetails.find({ feedbackToken: String(token) });
 	let istokenpresent = await feedbackDetails.find({ feedbackToken: String(token) });
-
-	if (istokenpresent.length != 0) {
+	if (istokenpresent.length != 0 && regtoken.length != 0) {
 		// res.writeHead(200, {'Content-Type': 'text/plain'});
 		res.status(200).send("<h1>Thanks for giving feedback!</h1>");
-	} else {
+	} else if (istokenpresent.length == 0 && regtoken.length != 0) {
 		res.render("feedback-form", { token: token });
-		// res.redirect(`/feedback-form?token=${token}`);
+	}
+	else {
+		res.status(200).send("<h1>Invalid Token!</h1>");
 	}
 
 
