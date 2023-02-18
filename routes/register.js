@@ -18,6 +18,7 @@ router.get("/feedback-form", async (req, res) => {
 	if (istokenpresent.length != 0 && regtoken.length != 0) {
 		// res.writeHead(200, {'Content-Type': 'text/plain'});
 		res.status(200).send("<h1>Thanks for giving feedback!</h1>");
+		
 	} else if (istokenpresent.length == 0 && regtoken.length != 0) {
 		res.render("feedback-form", { token: token });
 	}
@@ -47,8 +48,9 @@ router.post("/feedback-form", async (req, res) => {
 	console.log("feedData = ",feedData);
 	try {
 		await feedbackUserForm(req, feedData);
-		res.setHeader("Content-Type", "application/json");
-		res.end(JSON.stringify({ msg: "Feedback Filled!", ...feedData }));
+		// res.setHeader("Content-Type", "application/json");
+		// res.end(JSON.stringify({ msg: "Feedback Filled!", ...feedData }));
+		res.status(200).send("<h1>Thanks for giving feedback!</h1>");
 	} catch (err) {
 		console.log("ERROR = \n", err);
 	}
