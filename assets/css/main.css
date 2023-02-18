@@ -279,7 +279,16 @@ section {
 	color: #fff;
 }
 
-@media (max-width: 575px) {
+@media (max-width: 355px) {
+
+	.topbar .contact-info i a,
+	.topbar .contact-info i span {
+		font-size: 10px;
+		padding-left: 2px;
+	}
+}
+
+@media (min-width: 355px) {
 	.topbar .contact-info i a,
 	.topbar .contact-info i span {
 		font-size: 13px;
