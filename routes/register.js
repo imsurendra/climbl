@@ -1,8 +1,8 @@
 const router = require("express").Router();
-const {feedbackUserForm, registerUserLog} = require("../utils");
+const {feedbackUserForm, registerUserLog, updateRegDB} = require("../utils");
 var url = require("url");
 const { v4: uuidv4 } = require('uuid');
-
+const { extractSheets } = require("spreadsheet-to-json");
 
 // Feedback user
 router.get("/feedback-form", async (req, res) => {
@@ -142,5 +142,46 @@ router.get("/feedmenow", async (req, res) => {
 		totalfeed: arr.length,
 	});
 });
+
+router.get("/regpubliclivemenow", async (req, res) => { 
+	extractSheets(
+		{
+			spreadsheetKey: process.env.SPREADSHEET_ID,
+			credentials: require("../config/credentials.json"),
+		},
+		async function (err, data) {
+			// res.setHeader("Content-Type", "application/json");
+			// res.end(JSON.stringify(data["Form Responses 1"]));
+			// console.log(data["Form Responses 1"][0]);
+
+			// const regDetails = require("../models/reguser");
+
+
+			await updateRegDB(data["Form Responses 1"]);
+
+			res.render("regpublicgsheet", {
+				alluserinfo: data["Form Responses 1"],
+				totalreg: data["Form Responses 1"].length,
+			});
+
+		}
+	);
+});
+
+
+// {
+//   Timestamp: '2/17/2023 17:15:47',
+//   'Email Address': 'b21126@students.iitmandi.ac.in',
+//   Name: 'Saksham Panpaliya ',
+//   'Roll Number': 'B21126',
+//   'Mobile Number': '8551874797',
+//   'Referral code(Optional)': null,
+//   Payment: null,
+//   Counselling: null,
+//   Feedback: null,
+//   'Plan Sent': null,
+//   Index: 'CLIBML102',
+//   'Feedback Form': null
+// }
 
 module.exports = router;
